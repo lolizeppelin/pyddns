@@ -96,5 +96,5 @@ fi
 
 
 %changelog
-* Fri Mar 15 2019 Lolizeppelin <lolizeppelin@gmail.com> - 1.0.0
+* Sat Mar 18 2024 Lolizeppelin <lolizeppelin@gmail.com> - 1.0.0
 - Initial Package
