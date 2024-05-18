@@ -1,0 +1,11 @@
+#!/usr/bin/python
+from pyddns import load
+
+
+def main():
+    ddns = load()
+    ddns.run()
+
+
+if __name__ == '__main__':
+    main()

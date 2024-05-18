@@ -1,0 +1,12 @@
+[Unit]
+Description=Ddns service timer
+After=network.target
+
+[Timer]
+OnActiveSec=30s
+OnUnitInactiveSec=5m
+AccuracySec=10s
+Unit=ddns.service
+
+[Install]
+WantedBy=multi-user.target

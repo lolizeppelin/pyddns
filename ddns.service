@@ -1,0 +1,14 @@
+[Unit]
+Description=Ddns service
+
+[Service]
+Type=simple
+StateDirectory=pyddns
+User=ddns
+Group=ddns
+ExecStart=/usr/bin/pyddns --config-file /etc/pyddns/ddns.conf --config-dir /etc/pyddns/plugins
+RuntimeMaxSec=65s
+
+
+[Install]
+WantedBy=multi-user.target
