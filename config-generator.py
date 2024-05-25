@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/python3
 import os.path
 from oslo_config import generator
 
