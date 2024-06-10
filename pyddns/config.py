@@ -22,7 +22,7 @@ ddns_opts = [
                help='地址搜索插件'),
     cfg.ListOpt('interfaces',
                 short='i',
-                default=["pppoe"],
+                default=["ppp0"],
                 item_type=types.String(),
                 help='需要搜索的网卡名'),
 ]

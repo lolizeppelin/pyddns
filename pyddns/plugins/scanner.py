@@ -14,6 +14,8 @@ class DefaultScanner(Scanner):
             self.interfaces = sniff_interfaces()
 
     def load(self):
+        if not self.interfaces:
+            raise ValueError("not address found")
         return self.interfaces
 
 

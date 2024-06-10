@@ -2,6 +2,7 @@
 import sys
 
 from oslo_config import cfg
+from pyddns.config import ddns_opts
 from pyddns.plugins.dnspod import Dnspod
 
 
@@ -15,6 +16,7 @@ def show(result):
 
 
 def main():
+    cfg.CONF.register_opts(ddns_opts)
     cfg.CONF(project='list-domains', description="list domains from dnspod",
              args=('--config-dir', '/etc/pyddns/plugins') if len(sys.argv) <= 1 else None)
     result = query()

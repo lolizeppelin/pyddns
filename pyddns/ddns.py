@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import signal
 import threading
@@ -38,7 +39,7 @@ class SignalHandler(object):
 class Ddns:
 
     def __init__(self, path, scaner: Scanner, notifier: Notifier):
-        self.path = path
+        self.file = os.path.join(path, "dns.json")
         self.scaner = scaner
         self.notifier = notifier
 
@@ -51,13 +52,15 @@ class Ddns:
     def flush(self, address: OrderedDict[str, List[str]]):
         """flush address to state file"""
         buff = json.dumps(address)
-        with open(self.path, 'w') as f:
+        with open(self.file, 'w') as f:
             f.write(buff)
 
     @property
-    def last(self) -> OrderedDict[str, List[str]]:
+    def last(self) -> OrderedDict[str, List[str]] | None:
         """last address"""
-        with open(self.path, 'r') as f:
+        if not os.path.exists(self.file):
+            return None
+        with open(self.file, 'r') as f:
             return json.loads(f.read(), object_pairs_hook=collections.OrderedDict)
 
     def run(self):

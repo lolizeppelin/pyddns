@@ -49,6 +49,6 @@ def sniff_interfaces(*devices: str) -> OrderedDict[str, List[str]]:
     return address
 
 
-def get_domain(domain: str) -> str:
+def split_domain(domain: str) -> (str, str):
     e = tldextract.extract(domain)
-    return "%s.%s" % (e.domain, e.suffix)
+    return "%s.%s" % (e.domain, e.suffix), e.subdomain

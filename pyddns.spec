@@ -60,20 +60,35 @@ for l in bin/*;do
 done;
 
 # sys user
-install -p -m 644 -D %{name}-sysuser.conf %{buildroot}%{_sysusersdir}/pyddns.conf
 install -p -m 644 -D %{name}.env %{buildroot}%{_sysconfdir}/sysconfig/pyddns
+
+
+%pre
+if [ "$1" = "1" ] ; then
+    useradd -r -M -s /sbin/nologin -d /var/lib/pyddns -c "ddns account" ddns > /dev/null 2>&1
+fi
 
 
 %preun
 systemctl stop ddns.timer
 
 
+%postun
+if [ "$1" = "0" ] ; then
+    /usr/sbin/userdel ddns > /dev/null 2>&1
+fi
+
+
 %files
-%defattr(-,root,root,-)
-%{_sysusersdir}/pyddns.conf
+%defattr(-,ddns,ddns,-)
 # dir
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/plugins
+# config
+%config(noreplace) %{_sysconfdir}/%{name}/ddns.conf
+%config(noreplace) %{_sysconfdir}/%{name}/plugins/dnspod.conf
+%config(noreplace) %{_sysconfdir}/sysconfig/pyddns
+%defattr(-,root,root,-)
 %dir %{python3_sitelib}/%{name}-%{version}-*.egg-info/
 %{python3_sitelib}/%{name}-%{version}-*.egg-info/*
 # files
@@ -81,9 +96,6 @@ systemctl stop ddns.timer
 %{_unitdir}/ddns.service
 %{_unitdir}/ddns.timer
 %{python3_sitelib}/%{name}/*
-%config(noreplace) %{_sysconfdir}/%{name}/ddns.conf
-%config(noreplace) %{_sysconfdir}/%{name}/plugins/dnspod.conf
-%config(noreplace) %{_sysconfdir}/sysconfig/pyddns
 %doc README.md
 %doc doc/*
 

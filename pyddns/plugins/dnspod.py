@@ -29,8 +29,7 @@ class Dnspod(Notifier):
     def __init__(self):
         self.conf = cfg.CONF.dnspod
         self.timeout = cfg.CONF.timeout / 2
-        self.subdomain = self.conf.domain
-        self.domain = utils.get_domain(self.conf.domain)
+        self.domain, self.subdomain = utils.split_domain(self.conf.domain)
 
     def authenticate(self, timeout):
         return True
@@ -71,12 +70,12 @@ class Dnspod(Notifier):
     def info_a(self):
         params = dict(
             format='json', lang='en',
-            domain=CONF.domain, record_id=self.conf.record_id,
+            domain=self.domain, record_id=self.conf.record_id,
             login_token='%d,%s' % (self.conf.id, self.conf.token)
         )
         res = requests.post(self.conf.api + '/Record.Info',
                             headers=dnspod_headers, data=urlencode(params),
-                            timeout=self.conf.timeout)
+                            timeout=self.timeout)
         result = res.json()
         _check_code(result)
         return result
