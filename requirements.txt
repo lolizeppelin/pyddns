@@ -6,6 +6,6 @@ pbr>=5.0.0 # Apache-2.0
 stevedore>=2.0.0 # Apache-2.0
 oslo.config>=6.0.0 # Apache-2.0
 psutil>=5.0.0 # BSD
-netaddr>=1.0.0 # BSD
+netaddr>=0.10.0 # BSD
 requests>=2.0.0 # BSD
 tldextract>=3.0.0 # BSD

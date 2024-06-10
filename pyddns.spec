@@ -16,10 +16,10 @@ BuildRequires:  python3-setuptools >= 40
 BuildRequires:  python3-oslo-config >= 6.0.0
 
 Requires:       python3 >= 3.6
-Requires:       python-netaddr >= 1.0.0
+Requires:       python3-netaddr >= 0.10.0
 Requires:       python3-psutil >= 5.0
 Requires:       python3-oslo-config >= 6.0.0
-Requires:       python3-oslo-stevedore >= 2.0.0
+Requires:       python3-stevedore >= 2.0.0
 Requires:       python3-requests >= 2.0.0
 Requires:       python3-tldextract >= 3.0.0
 
@@ -45,7 +45,6 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
 # folders
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}/ddns
-%{__mkdir} -p %{buildroot}%{_sharedstatedir}/%{name}
 
 # config file
 %{__install} -D -m 0640 -p etc/%{name}/ddns.conf -t %{buildroot}%{_sysconfdir}/%{name}
@@ -87,9 +86,6 @@ systemctl stop ddns.timer
 %config(noreplace) %{_sysconfdir}/sysconfig/pyddns
 %doc README.md
 %doc doc/*
-# private path
-%defattr(-,ddns,ddns,-)
-%dir %{_sharedstatedir}/%{name}
 
 
 %changelog
