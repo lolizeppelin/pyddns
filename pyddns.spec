@@ -71,17 +71,20 @@ systemctl stop ddns.timer
 
 %files
 %defattr(-,root,root,-)
+%{_sysusersdir}/pyddns.conf
 # dir
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/plugins
 %dir %{python3_sitelib}/%{name}-%{version}-*.egg-info/
-%{py3_sitedir}/%{name}-%{version}-*.egg-info/*
+%{python3_sitelib}/%{name}-%{version}-*.egg-info/*
 # files
-%{_bindir}/ddns
+%{_bindir}/pyddns
 %{_unitdir}/ddns.service
 %{_unitdir}/ddns.timer
 %{python3_sitelib}/%{name}/*
 %config(noreplace) %{_sysconfdir}/%{name}/ddns.conf
+%config(noreplace) %{_sysconfdir}/%{name}/plugins/dnspod.conf
+%config(noreplace) %{_sysconfdir}/sysconfig/pyddns
 %doc README.md
 %doc doc/*
 # private path
@@ -90,5 +93,5 @@ systemctl stop ddns.timer
 
 
 %changelog
-* Sat Mar 18 2024 Lolizeppelin <lolizeppelin@gmail.com> - 1.0.0
+* Wed May 22 2024 Lolizeppelin <lolizeppelin@gmail.com> - 1.0.0
 - Initial Package
