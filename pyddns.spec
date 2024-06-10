@@ -11,8 +11,6 @@ Group:          Development/Libraries
 License:        MIT
 URL:            http://github.com/Lolizeppelin/%{name}
 Source0:        %{name}-%{version}.tar.gz
-Source1:        %{name}-sysuser.conf
-Source2:        %{name}.env
 BuildArch:      noarch
 
 BuildRequires:  python3 >= 3.6
@@ -63,8 +61,8 @@ for l in bin/*;do
 done;
 
 # sys user
-install -p -m 644 -D %{SOURCE1} %{buildroot}%{_sysusersdir}/pyddns.conf
-install -p -m 644 -D %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/pyddns
+install -p -m 644 -D %{name}-sysuser.conf %{buildroot}%{_sysusersdir}/pyddns.conf
+install -p -m 644 -D %{name}.env %{buildroot}%{_sysconfdir}/sysconfig/pyddns
 
 
 %preun
