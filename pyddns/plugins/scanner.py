@@ -1,4 +1,5 @@
 import collections
+from oslo_config import cfg
 from pyddns.plugins import Scanner
 
 from pyddns.utils import is_external, sniff_interfaces, sniff_ipaddr_by_udp
@@ -7,9 +8,17 @@ from pyddns.utils import is_external, sniff_interfaces, sniff_ipaddr_by_udp
 class DefaultScanner(Scanner):
 
     def __init__(self):
-        self.interfaces = sniff_interfaces()
+        if cfg.CONF.interfaces:
+            self.interfaces = sniff_interfaces(*cfg.CONF.interfaces)
+        else:
+            self.interfaces = sniff_interfaces()
 
     def load(self):
-        address = collections.OrderedDict()
+        return self.interfaces
 
-        return address
+
+class UdpScanner(Scanner):
+
+    def load(self):
+        ip = sniff_ipaddr_by_udp()
+        return collections.OrderedDict({"udp": [ip, ]})

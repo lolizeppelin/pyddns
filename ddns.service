@@ -4,6 +4,7 @@ Description=Ddns service
 [Service]
 Type=simple
 StateDirectory=pyddns
+EnvironmentFile=/etc/sysconfig/pyddns
 User=ddns
 Group=ddns
 ExecStart=/usr/bin/pyddns --config-file /etc/pyddns/ddns.conf --config-dir /etc/pyddns/plugins

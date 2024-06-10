@@ -29,7 +29,7 @@ OnUnitActiveSec=5m
 ```ini
 
 [DEFAULT]
-notifier = ddns
+notifier = dnspod
 
 [ddns]
 domain = www.aaa.com

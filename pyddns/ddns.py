@@ -9,7 +9,6 @@ from oslo_config import cfg
 
 from typing import OrderedDict, List
 
-
 from .plugins import Scanner
 from .plugins import Notifier
 
@@ -63,6 +62,7 @@ class Ddns:
 
     def run(self):
         try:
+            self.notifier.authenticate(cfg.CONF.timeout / 2)
             address = self.scaner.load()
             if not address:
                 logging.warning("address not found from scaner %s", cfg.CONF.scaner)
@@ -70,9 +70,11 @@ class Ddns:
             if not cfg.CONF.force and self.last == address:
                 logging.debug("address not change")
                 return
+            logging.debug("try push address")
             if self.notifier.push(address):
                 logging.info("address pushed")
                 # push success, flush address
                 self.flush(address)
         except Exception:
             logging.exception("run ddns failed")
+            sys.exit(1)

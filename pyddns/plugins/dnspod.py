@@ -29,7 +29,8 @@ class Dnspod(Notifier):
     def __init__(self):
         self.conf = cfg.CONF.dnspod
         self.timeout = cfg.CONF.timeout / 2
-        self.domain, self.subdomain = utils.split_domain(self.conf.domain)
+        self.subdomain = self.conf.domain
+        self.domain = utils.get_domain(self.conf.domain)
 
     def authenticate(self, timeout):
         return True

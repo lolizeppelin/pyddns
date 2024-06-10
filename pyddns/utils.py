@@ -1,6 +1,7 @@
 import collections
 import socket
 import psutil
+import tldextract
 from typing import OrderedDict
 from typing import List
 
@@ -36,10 +37,11 @@ def sniff_ipaddr_by_udp() -> str:
             s.close()
 
 
-def sniff_interfaces() -> OrderedDict[str, List[str]]:
+def sniff_interfaces(*devices: str) -> OrderedDict[str, List[str]]:
     """get all address from interface"""
     interfaces = psutil.net_if_addrs()
-    keys = [name for name in sorted(interfaces.keys()) if name != "lo"]
+    keys = [key for key in devices] if len(devices) > 0 \
+        else [name for name in sorted(interfaces.keys()) if name != "lo"]
     address = collections.OrderedDict()
     for name in keys:
         ips = sorted([addr.address for addr in interfaces[name] if addr.family == 2])
@@ -47,6 +49,6 @@ def sniff_interfaces() -> OrderedDict[str, List[str]]:
     return address
 
 
-
-def split_domain(domain: str) -> (str, str):
-    pass
+def get_domain(domain: str) -> str:
+    e = tldextract.extract(domain)
+    return "%s.%s" % (e.domain, e.suffix)

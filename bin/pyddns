@@ -1,9 +1,9 @@
 #!/usr/bin/python
-from pyddns import load
+from pyddns import loader
 
 
 def main():
-    ddns = load()
+    ddns = loader.load()
     ddns.run()
 
 

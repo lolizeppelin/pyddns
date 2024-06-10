@@ -1,36 +1,39 @@
 %include %{_rpmconfigdir}/macros.python
 
 %global debug_package %{nil}
-%define proj_name pyddns
 %define _release 1
 
-Name:           %{proj_name}
+Name:           pyddns
 Version:        1.0.0
 Release:        %{_release}%{?dist}
 Summary:        ddns utils
 Group:          Development/Libraries
 License:        MIT
-URL:            http://github.com/Lolizeppelin/%{proj_name}
-Source0:        %{proj_name}-%{version}.tar.gz
+URL:            http://github.com/Lolizeppelin/%{name}
+Source0:        %{name}-%{version}.tar.gz
+Source1:        %{name}-sysuser.conf
+Source2:        %{name}.env
 BuildArch:      noarch
 
-BuildRequires:  python >= 3.6
-BuildRequires:  python-setuptools >= 40
+BuildRequires:  python3 >= 3.6
+BuildRequires:  python3-setuptools >= 40
+BuildRequires:  python3-oslo-config >= 6.0.0
 
-Requires:       python >= 3.6
+Requires:       python3 >= 3.6
 Requires:       python-netaddr >= 1.0.0
-Requires:       python-psutil >= 5.0
-Requires:       python-oslo-config >= 6.0.0
-Requires:       python-oslo-stevedore >= 2.0.0
-Requires:       python-requests >= 2.0.0
+Requires:       python3-psutil >= 5.0
+Requires:       python3-oslo-config >= 6.0.0
+Requires:       python3-oslo-stevedore >= 2.0.0
+Requires:       python3-requests >= 2.0.0
+Requires:       python3-tldextract >= 3.0.0
 
 
 %description
 A simple ddns util
 
 %prep
-%setup -q -n %{proj_name}-%{version}
-rm -rf %{proj_name}.egg-info
+%setup -q -n %{name}-%{version}
+rm -rf %{name}.egg-info
 
 %build
 # build
@@ -41,58 +44,51 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 %install
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
-mkdir -p %{buildroot}%{_sysconfdir}/%{proj_name}
-mkdir -p %{buildroot}%{_sharedstatedir}/%{proj_name}
+# folders
+%{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
+%{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}/ddns
+%{__mkdir} -p %{buildroot}%{_sharedstatedir}/%{name}
 
-%{__install} -D -m 0640 -p etc/%{proj_name}/ddns.conf -t %{buildroot}%{_sysconfdir}/%{proj_name}
+# config file
+%{__install} -D -m 0640 -p etc/%{name}/ddns.conf -t %{buildroot}%{_sysconfdir}/%{name}
+%{__install} -D -m 0640 -p etc/%{name}/plugins/dnspod.conf -t %{buildroot}%{_sysconfdir}/%{name}/plugins
+
+# service file
 %{__install} -D -m 0644 -p ddns.service %{buildroot}%{_unitdir}/ddns.service
 %{__install} -D -m 0644 -p ddns.timer %{buildroot}%{_unitdir}/ddns.timer
 
+# bin file
 for l in bin/*;do
     %{__install} -D -m 0755 $l -t %{buildroot}%{_bindir}
 done;
 
-
-%pre
-if [ "$1" = "1" ] ; then
-    getent group ddns >/dev/null || groupadd -f -g 874 -r ddns
-    if ! getent passwd ddns >/dev/null ; then
-        if ! getent passwd 874 >/dev/null ; then
-          useradd -r -u 874 -g ddns -M -s /sbin/nologin -c "Ddns process user" ddns
-        else
-          useradd -r -g ddns -M -s /sbin/nologin -c "Ddns process user" ddns
-        fi
-    fi
-fi
-
+# sys user
+install -p -m 644 -D %{SOURCE1} %{buildroot}%{_sysusersdir}/pyddns.conf
+install -p -m 644 -D %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/pyddns
 
 
 %preun
 systemctl stop ddns.timer
 
-%postun
-if [ "$1" = "0" ] ; then
-    /usr/sbin/userdel ddns > /dev/null 2>&1
-fi
-
-
 
 %files
 %defattr(-,root,root,-)
 # dir
-%dir  %{_sysconfdir}/%{proj_name}/plugins
-%dir %{py_sitedir}/%{proj_name}-%{version}-*.egg-info/
-%{py_sitedir}/%{proj_name}-%{version}-*.egg-info/*
+%dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/plugins
+%dir %{py_sitedir}/%{name}-%{version}-*.egg-info/
+%{py_sitedir}/%{name}-%{version}-*.egg-info/*
 # files
 %{_bindir}/ddns
 %{_unitdir}/ddns.service
 %{_unitdir}/ddns.timer
-%{py_sitedir}/%{proj_name}/*
-%config(noreplace) %{_sysconfdir}/%{proj_name}/ddns.conf
+%{py_sitedir}/%{name}/*
+%config(noreplace) %{_sysconfdir}/%{name}/ddns.conf
 %doc README.md
+%doc doc/*
 # private path
 %defattr(-,ddns,ddns,-)
-%dir %{_sharedstatedir}/%{proj_name}
+%dir %{_sharedstatedir}/%{name}
 
 
 %changelog
