@@ -1,5 +1,3 @@
-%include %{_rpmconfigdir}/macros.python
-
 %global debug_package %{nil}
 %define _release 1
 
@@ -35,12 +33,12 @@ rm -rf %{name}.egg-info
 
 %build
 # build
-CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
+CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
 # generator config
-%{__python} config-generator.py
+%{__python3} config-generator.py
 
 %install
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
 
 # folders
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
@@ -74,13 +72,13 @@ systemctl stop ddns.timer
 # dir
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/plugins
-%dir %{py_sitedir}/%{name}-%{version}-*.egg-info/
-%{py_sitedir}/%{name}-%{version}-*.egg-info/*
+%dir %{python3_sitelib}/%{name}-%{version}-*.egg-info/
+%{py3_sitedir}/%{name}-%{version}-*.egg-info/*
 # files
 %{_bindir}/ddns
 %{_unitdir}/ddns.service
 %{_unitdir}/ddns.timer
-%{py_sitedir}/%{name}/*
+%{python3_sitelib}/%{name}/*
 %config(noreplace) %{_sysconfdir}/%{name}/ddns.conf
 %doc README.md
 %doc doc/*
