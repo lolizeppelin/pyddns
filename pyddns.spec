@@ -32,6 +32,8 @@ A simple ddns util
 rm -rf %{name}.egg-info
 
 %build
+sed -i '0,/VERSION/s//%{version}/' setup.cfg
+sed -i '0,/VERSION/s//%{version}/' PKG-INFO
 # build
 CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
 # generator config
