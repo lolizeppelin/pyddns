@@ -44,7 +44,9 @@ def sniff_interfaces(*devices: str) -> OrderedDict[str, List[str]]:
         else [name for name in sorted(interfaces.keys()) if name != "lo"]
     address = collections.OrderedDict()
     for name in keys:
-        ips = sorted([addr.address for addr in interfaces[name] if addr.family == 2])
+        ips = sorted([addr.address for addr in interfaces.get(name, []) if addr.family == 2])
+        if not ips:
+            continue
         address[name] = ips
     return address
 
