@@ -13,8 +13,8 @@ cfg.CONF.register_opts(dnspod_opts, 'dnspod')
 
 dnspod_headers = {
     "Content-type": "application/x-www-form-urlencoded",
-    "Accept": "text/json",
-    "User-Agent": "python2-pyddns/1.0.0"
+    "Accept": "application/json",
+    "User-Agent": "python-pyddns/1.0.0"
 }
 
 
